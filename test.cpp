@@ -1,41 +1,27 @@
-#include <iostream>
-#include <string>
+#include <stdio.h>
 
-using namespace std;
-
-int main(int argc, char *argv[])
+int main(int argc, char const *argv[])
 {
-  string s;
+  int n, a[200002];
+  int b[200002];
 
-  while (cin >> s) {
-    size_t result {s.size() / 2 + 1};
-    
-    for (auto i {'a'}; i <= 'z'; ++i) {
-      size_t pre, len {0};
-
-      if (s[0] == i) pre = 0;
-      else pre = -1;
-
-      for (size_t j {1}; j < s.size(); ++j) {
-	if (s[j] == i) {	  
-	  if (len < j - pre) {
-	    len = j - pre;
-	  }
-	  
-	  pre = j;
-	}
-      }
-
-      if (len < s.size() - pre) {
-	len = s.size() - pre;
-      }
-
-      if (len != 0 && result > len) {
-	result = len;
-      }
+  for(int i=0;i<200002;i++)
+    b[i] = -1;
+  scanf("%d", &n);
+  int neset = 1;
+  for(int i=0;i<n;i++)
+    scanf("%d", &a[i]);
+  for(int i=0; i<n; i++)
+  {
+    if(b[a[i]] == 1)
+    {
+      neset += 1;
+    }
+    else
+    {
+      b[a[i]] = 1;
     }
 
-    cout << result << "\n";
   }
-  return 0;
+  printf("%d", neset);
 }
