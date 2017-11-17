@@ -12,28 +12,42 @@ def plotData(X,y):
   
 def predict(X,theta):
   ##### replace the next line with your code #####
-  if X.ndim>1:
-    pred = (X * theta).sum(axis=1)
-  else:
-    pred = (X * theta).sum()
-  return np.sign(pred)
+  return np.where(np.inner(theta.T,X)<0,-1,1)
 
 def computeCost(X, y, theta, lambd):
   # function calculates the cost J(theta) and returns its value
   ##### replace the next line with your code #####
-  k = 1 - y*((X * theta).sum())
-  z=np.zeros(len(y))
-  cost = np.maximum(z, k).sum()/len(y) + (lambd*theta*theta).sum()
+  m = np.size(y)
+  p1 = np.inner(theta.T,X)
+  p2 = y*p1
+  p3 = 1 - p2
+  print(p3)
+  p4 = np.where(p3 < 0, 0 ,p3)
+  p5 = np.inner(lambd , np.inner(theta.T,theta))
+  p6 = p4+p5
+  p7 = np.sum(p6)
+  cost = (p7)/m
   return cost
 
 def computeGradient(X,y,theta,lambd):
   # calculate the gradient of J(theta) and return its value
   ##### replace the next lines with your code #####
-  m=len(y)
-  k = y*((X * theta).sum())
-  k = np.where(k<=1, 1, 0)
-  print(k)
-  grad = 2*lambd*theta - (y*X.T*k).sum()/m
+  n=len(theta)
+  m = len(y)
+  p3 = y*np.inner(theta.T,X)
+  #p3[p3==0.]=0.
+  # print("y= ",y)
+  #print("p3",p3)
+  k = np.where(p3 <= 1, 1, 0)
+  #print("k= ",k)
+  y2 = y*k
+ # y2 = np.where(y2<1 ,0,1)
+  # print("y2",y2)
+  # print("y2*y",y2*y)
+  p1 = 2*lambd*theta.T
+  print("p1",p1)
+  p2 = np.inner(y2,X.T)
+  grad = (p1 - (p2)/m)
   return grad
 
 def gradientDescent(X, y, theta,lambd):
@@ -63,13 +77,17 @@ def addQuadraticFeature(X):
   # Given feature vector [x_1,x_2] as input, extend this to
   # [x_1,x_2,x_1*x_1] i.e. add a new quadratic feature
   ##### insert your code here #####
+  X = np.hstack((X, X[:,[0]]**2))
   return X
 
 def computeScore(X,y,preds):
   # for training data X,y it calculates the number of correct predictions made by the model
   ##### replace the next line with your code #####
-  score = 0
-  return score
+  print(preds)
+  print(y)
+  y = y.astype(int)
+  k=0
+  return np.sum(y==preds)
 
 def plotDecisionBoundary(Xt,y,Xscale,theta):
   # plots the training data plus the decision boundary in the model
@@ -133,18 +151,15 @@ def main():
   (Xt,Xscale) = normaliseData(Xt)
   
   lambd=1
-  print('n===', n)
 
   print('testing the prediction function ...')
   theta=np.arange(1,n+1)
   print('when x=[1,1,1] and theta is [1,2,3]) predictions = ',predict(np.ones(n),theta))
-  print('n===', n)
   print('when x=[-1,-1,-1] and theta is [1,2,3]) prediction = ',predict(-np.ones(n),theta))
   print('approx expected predictions are 1 and -1')
   input('Press Enter to continue...')
   print('testing the cost function ...')
   theta=np.zeros(n)
-  print('n===', n)
   print('when theta is zero cost = ',computeCost(Xt,y,theta,lambd))
   print('approx expected cost value is 1.0')
   input('Press Enter to continue...')
