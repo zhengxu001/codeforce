@@ -12,14 +12,12 @@ int main(int argc, char const *argv[])
   int r = n-1;
   for(int i=n-1; i>=0; i--)
   {
-    if(r==0)
-      break;
     int right = i - a[i];
     if(right<0)
       right = 0;
     if(right < r)
     {
-      for(int j = right; j<r; j++)
+      for(int j = right; j<r && j<i; j++)
       {
         b[j] = -1;
       }
